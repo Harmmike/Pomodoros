@@ -22,6 +22,7 @@ namespace ConsoleUI
 
             _controller.PomodoroFinished += OnPomodoroFinished;
             _controller.StartNewPomodoro(workInterval, breakInterval, quantity, name, description);
+            Console.WriteLine("Starting pomodoro...");
 
             Console.ReadLine();
         }
