@@ -1,6 +1,6 @@
 # Pomodoros
 
-A simple app to keep track of time and help me stay consistent on projects/study.
+A simple app to keep track of time and help me stay consistent on projects/study. Initially this will be a Console app using the timer class and the beep function. Later, I would like to change this into a web app with a database to keep record of what's been done.
 
 1. Decide on the task to be done.
 2. Set the pomodoro timer (typically for 25 minutes).
