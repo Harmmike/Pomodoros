@@ -1,5 +1,7 @@
 # Pomodoros
 
+A simple app to keep track of time and help me stay consistent on projects/study.
+
 1. Decide on the task to be done.
 2. Set the pomodoro timer (typically for 25 minutes).
 3. Work on the task.
