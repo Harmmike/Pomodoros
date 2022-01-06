@@ -1,12 +1,56 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PomodorosApp.Views.WorkingView">
+             x:Class="PomodorosApp.Views.WorkingView"
+             BackgroundColor="#325380">
+
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+        <StackLayout BackgroundColor="#5085CC">
+
+            <StackLayout Margin="5">
+                <Label Text="{Binding RunningTotal, StringFormat='{}{0:h\\:mm\\:ss'}" FontSize="75" TextColor="White" HorizontalTextAlignment="Center"/>
+                <Label HorizontalTextAlignment="Center" FontSize="Large" TextColor="White">
+                    <Label.Triggers>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsInactive}" Value="True">
+                            <Setter Property="Text" Value="Active" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Label" Binding="{Binding IsInactive}" Value="False">
+                            <Setter Property="Text" Value="Break" />
+                        </DataTrigger>
+                    </Label.Triggers>
+                </Label>
+                <Label Text="{Binding CurrentStartTime, StringFormat='Pomodoro started at {0:h:mm tt}'}" TextColor="White" HorizontalTextAlignment="Center"/>
+            </StackLayout>
+
+            <StackLayout Margin="5">
+                <Label Text="Pomodoro Settings" FontSize="Large" TextColor="White" FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0" Text="Pomodoros in set: " TextColor="White" />
+                    <Label Grid.Row="1" Grid.Column="0" Text="Pomodoro Length: " TextColor="White" />
+                    <Label Grid.Row="2" Grid.Column="0" Text="Break Length:  " TextColor="White" />
+
+                    <Entry Grid.Row="0" Grid.Column="1" WidthRequest="50" Text="{Binding PomodorosInSet}" Placeholder="4" PlaceholderColor="White" />
+                    <Entry Grid.Row="1" Grid.Column="1" WidthRequest="50" Text="{Binding PomodoroLength}" Placeholder="25" PlaceholderColor="White" />
+                    <Entry Grid.Row="2" Grid.Column="1" WidthRequest="50" Text="{Binding BreakLength}" Placeholder="5" PlaceholderColor="White" />
+
+                </Grid>
+
+                <Button Text="Begin" IsEnabled="{Binding IsInactive}" Command="{Binding BeginPomodoroCommand}"/>
+
+            </StackLayout>
+            
         </StackLayout>
     </ContentPage.Content>
+    
 </ContentPage>

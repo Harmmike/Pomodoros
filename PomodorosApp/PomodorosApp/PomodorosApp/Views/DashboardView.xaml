@@ -1,13 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PomodorosApp.Views.DashboardView"
-             Title="Dashboard">
-    <ContentPage.Content>
-        <StackLayout>
-            <Label Text="Dashboard View"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
-    </ContentPage.Content>
-</ContentPage>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            x:Class="PomodorosApp.Views.DashboardView"
+            xmlns:views="clr-namespace:PomodorosApp.Views"
+            Title="Pomodoros">
+
+
+    <TabbedPage.Children>
+        <NavigationPage Title="Working">
+            <x:Arguments>
+                <views:WorkingView BindingContext="{Binding WorkingVM}"/>
+            </x:Arguments>
+        </NavigationPage>
+        
+        <NavigationPage Title="Summary">
+            <x:Arguments>
+                <views:SummaryView />
+            </x:Arguments>
+        </NavigationPage>
+        
+        <NavigationPage Title="Settings">
+            <x:Arguments>
+                <views:SettingsView />
+            </x:Arguments>
+        </NavigationPage>
+    </TabbedPage.Children>
+    
+    
+</TabbedPage>
