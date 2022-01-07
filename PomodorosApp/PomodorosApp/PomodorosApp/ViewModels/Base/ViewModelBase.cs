@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using PomodorosApp.Shared;
 using System.Threading.Tasks;
-using Xamarin.Forms;
 
 namespace PomodorosApp.ViewModels.Base
 {
-    public class ViewModelBase : BindableObject
+    public class ViewModelBase : ObservableObject
     {
         private string _title;
         private bool _isLoading;
@@ -24,15 +22,6 @@ namespace PomodorosApp.ViewModels.Base
         public virtual Task InitializeAsync(object navigationData = null)
         {
             return Task.CompletedTask;
-        }
-
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName]string propertyName = null)
-        {
-            if(EqualityComparer<T>.Default.Equals(storage, value)) { return false; }
-
-            storage = value;
-            OnPropertyChanged(propertyName);
-            return true;
         }
     }
 }

@@ -3,6 +3,7 @@ using PomodorosApp.Services;
 using PomodorosApp.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -19,6 +20,7 @@ namespace PomodorosApp.ViewModels
         private string _statusText;
         private PomodoroSet _currentSet;
         private IPomodoroTimer _timer;
+        private Timer _runningTimer;
 
         private ICommand _beginPomodoroCommand;
 
@@ -88,6 +90,10 @@ namespace PomodorosApp.ViewModels
             BeginPomodoroCommand = new Command(BeginPomodoro);
             Timer = new PomodoroTimer();
             this.Timer.TimerStatusChanged += OnTimerStatusChanged;
+            _runningTimer = new Timer();
+            _runningTimer.Enabled = false;
+            _runningTimer.Interval = 1000;
+            _runningTimer.Elapsed += OnRunningTimerTick;
 
             IsInactive = true;
             PomodorosInSet = 4;
@@ -107,6 +113,9 @@ namespace PomodorosApp.ViewModels
             Timer.SetPomodoroLength(PomodoroLength);
             Timer.SetPomodoroSetQuantity(PomodorosInSet);
 
+            _runningTimer.Enabled = true;
+            _runningTimer.Start();
+
             IsInactive = !IsInactive;
             CurrentStartTime = DateTime.Now;
             CurrentSet = new PomodoroSet()
@@ -122,7 +131,19 @@ namespace PomodorosApp.ViewModels
 
         private void OnTimerStatusChanged(object sender, string newStatus)
         {
+            //TODO: Play sound
             StatusText = newStatus;
+            RunningTotal = TimeSpan.Zero;
+
+            if(StatusText == "Finished")
+            {
+                _runningTimer.Stop();
+            }
+        }
+
+        private void OnRunningTimerTick(object sender, ElapsedEventArgs e)
+        {
+            RunningTotal += TimeSpan.FromSeconds(1);
         }
     }
 }

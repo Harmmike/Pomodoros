@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace PomodorosApp.Services
@@ -23,6 +22,7 @@ namespace PomodorosApp.Services
         public PomodoroTimer()
         {
             _timer = new Timer();
+            _timer.Enabled = false;
             _timer.Elapsed += OnTimerElapsed;
             _currentPomodoros = 1;
             _status = TimerStatus.Waiting;
@@ -46,6 +46,7 @@ namespace PomodorosApp.Services
         public void StartPomodoroTimer()
         {
             _status = TimerStatus.Active;
+            _timer.Enabled = true;
             _timer.Interval = _pomodoroLength;
             _timer.Start();
             RaiseStatusChange();

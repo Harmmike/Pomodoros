@@ -15,13 +15,13 @@
             </x:Arguments>
         </NavigationPage>
         
-        <NavigationPage Title="Summary">
+        <NavigationPage Title="Summary" BindingContext="{Binding SummaryVM}">
             <x:Arguments>
                 <views:SummaryView />
             </x:Arguments>
         </NavigationPage>
         
-        <NavigationPage Title="Settings">
+        <NavigationPage Title="Settings" BindingContext="{Binding SettingsVM}">
             <x:Arguments>
                 <views:SettingsView />
             </x:Arguments>
