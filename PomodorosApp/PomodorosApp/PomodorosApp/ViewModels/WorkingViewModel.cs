@@ -1,4 +1,6 @@
-﻿using PomodorosApp.ViewModels.Base;
+﻿using PomodorosApp.Models;
+using PomodorosApp.Services;
+using PomodorosApp.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -14,6 +16,10 @@ namespace PomodorosApp.ViewModels
         private int _pomodorosInSet;
         private int _pomodorosLength;
         private int _breakLength;
+        private string _statusText;
+        private PomodoroSet _currentSet;
+        private IPomodoroTimer _timer;
+
         private ICommand _beginPomodoroCommand;
 
         public bool IsInactive
@@ -34,18 +40,43 @@ namespace PomodorosApp.ViewModels
         public int PomodorosInSet
         {
             get => _pomodorosInSet;
-            set => SetProperty(ref _pomodorosInSet, value);
+            set
+            {
+                if(value > 0) { SetProperty(ref _pomodorosInSet, value); }
+            }
         }
-        public int PomodorosLength
+        public int PomodoroLength
         {
             get => _pomodorosLength;
-            set => SetProperty(ref _pomodorosLength, value);
+            set
+            {
+                if (value > 0) { SetProperty(ref _pomodorosLength, value); }
+            }
         }
         public int BreakLength
         {
             get => _breakLength;
-            set => SetProperty(ref _breakLength, value);
+            set
+            {
+                if (value > 0) { SetProperty(ref _breakLength, value); }
+            }
         }
+        public string StatusText
+        {
+            get => _statusText;
+            set => SetProperty(ref _statusText, value);
+        }
+        public PomodoroSet CurrentSet
+        {
+            get => _currentSet;
+            set => SetProperty(ref _currentSet, value);
+        }
+        public IPomodoroTimer Timer
+        {
+            get => _timer;
+            set => SetProperty(ref _timer, value);
+        }
+
         public ICommand BeginPomodoroCommand
         {
             get => _beginPomodoroCommand;
@@ -55,7 +86,13 @@ namespace PomodorosApp.ViewModels
         public WorkingViewModel()
         {
             BeginPomodoroCommand = new Command(BeginPomodoro);
+            Timer = new PomodoroTimer();
+            this.Timer.TimerStatusChanged += OnTimerStatusChanged;
+
             IsInactive = true;
+            PomodorosInSet = 4;
+            PomodoroLength = 25;
+            BreakLength = 5;
         }
 
         public override Task InitializeAsync(object navigationData = null)
@@ -66,7 +103,26 @@ namespace PomodorosApp.ViewModels
 
         private void BeginPomodoro()
         {
+            Timer.SetBreakLength(BreakLength);
+            Timer.SetPomodoroLength(PomodoroLength);
+            Timer.SetPomodoroSetQuantity(PomodorosInSet);
+
             IsInactive = !IsInactive;
+            CurrentStartTime = DateTime.Now;
+            CurrentSet = new PomodoroSet()
+            {
+                BreakLength = new TimeSpan(0, BreakLength, 0),
+                PomodoroLength = new TimeSpan(0, PomodoroLength, 0)
+            };
+
+            CurrentSet.Pomodoros.Add(new Pomodoro(PomodoroLength));
+
+            Timer.StartPomodoroTimer();
+        }
+
+        private void OnTimerStatusChanged(object sender, string newStatus)
+        {
+            StatusText = newStatus;
         }
     }
 }

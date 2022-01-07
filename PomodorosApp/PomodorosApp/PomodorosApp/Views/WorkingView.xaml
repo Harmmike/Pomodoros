@@ -9,17 +9,17 @@
 
             <StackLayout Margin="5">
                 <Label Text="{Binding RunningTotal, StringFormat='{}{0:h\\:mm\\:ss'}" FontSize="75" TextColor="White" HorizontalTextAlignment="Center"/>
-                <Label HorizontalTextAlignment="Center" FontSize="Large" TextColor="White">
+                <Label Text="{Binding StatusText}" HorizontalTextAlignment="Center" FontSize="Large" TextColor="White" />
+                <Label Text="{Binding CurrentStartTime, StringFormat='Pomodoro started at {0:h:mm tt}'}"  TextColor="White" HorizontalTextAlignment="Center">
                     <Label.Triggers>
                         <DataTrigger TargetType="Label" Binding="{Binding IsInactive}" Value="True">
-                            <Setter Property="Text" Value="Active" />
+                            <Setter Property="IsEnabled" Value="False" />
                         </DataTrigger>
                         <DataTrigger TargetType="Label" Binding="{Binding IsInactive}" Value="False">
-                            <Setter Property="Text" Value="Break" />
+                            <Setter Property="IsEnabled" Value="True" />
                         </DataTrigger>
                     </Label.Triggers>
                 </Label>
-                <Label Text="{Binding CurrentStartTime, StringFormat='Pomodoro started at {0:h:mm tt}'}" TextColor="White" HorizontalTextAlignment="Center"/>
             </StackLayout>
 
             <StackLayout Margin="5">
@@ -40,13 +40,13 @@
                     <Label Grid.Row="1" Grid.Column="0" Text="Pomodoro Length: " TextColor="White" />
                     <Label Grid.Row="2" Grid.Column="0" Text="Break Length:  " TextColor="White" />
 
-                    <Entry Grid.Row="0" Grid.Column="1" WidthRequest="50" Text="{Binding PomodorosInSet}" Placeholder="4" PlaceholderColor="White" />
-                    <Entry Grid.Row="1" Grid.Column="1" WidthRequest="50" Text="{Binding PomodoroLength}" Placeholder="25" PlaceholderColor="White" />
-                    <Entry Grid.Row="2" Grid.Column="1" WidthRequest="50" Text="{Binding BreakLength}" Placeholder="5" PlaceholderColor="White" />
+                    <Entry Grid.Row="0" Grid.Column="1" WidthRequest="50" Text="{Binding PomodorosInSet}" Keyboard="Numeric" />
+                    <Entry Grid.Row="1" Grid.Column="1" WidthRequest="50" Text="{Binding PomodoroLength}" Keyboard="Numeric" />
+                    <Entry Grid.Row="2" Grid.Column="1" WidthRequest="50" Text="{Binding BreakLength}" Keyboard="Numeric" />
 
                 </Grid>
 
-                <Button Text="Begin" IsEnabled="{Binding IsInactive}" Command="{Binding BeginPomodoroCommand}"/>
+                <Button Text="Begin" IsVisible="{Binding IsInactive}" Command="{Binding BeginPomodoroCommand}"/>
 
             </StackLayout>
             
