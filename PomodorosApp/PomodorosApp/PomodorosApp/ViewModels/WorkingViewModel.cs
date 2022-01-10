@@ -1,5 +1,6 @@
 ﻿using PomodorosApp.Models;
 using PomodorosApp.Services;
+using PomodorosApp.Services.Audio;
 using PomodorosApp.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace PomodorosApp.ViewModels
         private PomodoroSet _currentSet;
         private IPomodoroTimer _timer;
         private Timer _runningTimer;
+        private IAudioService _audioService;
 
         private ICommand _beginPomodoroCommand;
 
@@ -99,6 +101,8 @@ namespace PomodorosApp.ViewModels
             PomodorosInSet = 4;
             PomodoroLength = 25;
             BreakLength = 5;
+
+            _audioService = new AudioService();
         }
 
         public override Task InitializeAsync(object navigationData = null)
@@ -109,6 +113,7 @@ namespace PomodorosApp.ViewModels
 
         private void BeginPomodoro()
         {
+
             Timer.SetBreakLength(BreakLength);
             Timer.SetPomodoroLength(PomodoroLength);
             Timer.SetPomodoroSetQuantity(PomodorosInSet);
@@ -131,13 +136,19 @@ namespace PomodorosApp.ViewModels
 
         private void OnTimerStatusChanged(object sender, string newStatus)
         {
-            //TODO: Play sound
+            _audioService.Play();
             StatusText = newStatus;
             RunningTotal = TimeSpan.Zero;
 
-            if(StatusText == "Finished")
+            if(StatusText.ToLower() == "finished")
             {
                 _runningTimer.Stop();
+                _audioService.SetNextSound(string.Empty);
+                return;
+            }
+            else
+            {
+                _audioService.SetNextSound(StatusText);
             }
         }
 
