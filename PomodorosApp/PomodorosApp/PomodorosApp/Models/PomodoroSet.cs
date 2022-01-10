@@ -7,6 +7,7 @@ namespace PomodorosApp.Models
     {
         public TimeSpan PomodoroLength { get; set; }
         public TimeSpan BreakLength { get; set; }
+        public DateTime Date { get; set; }
         public ObservableCollection<Pomodoro> Pomodoros { get; set; }
 
         public PomodoroSet()

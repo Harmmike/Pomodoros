@@ -1,6 +1,7 @@
 ﻿using PomodorosApp.Models;
 using PomodorosApp.Services;
 using PomodorosApp.Services.Audio;
+using PomodorosApp.Shared.Data;
 using PomodorosApp.ViewModels.Base;
 using System;
 using System.Threading.Tasks;
@@ -22,7 +23,9 @@ namespace PomodorosApp.ViewModels
         private PomodoroSet _currentSet;
         private IPomodoroTimer _timer;
         private Timer _runningTimer;
+
         private IAudioService _audioService;
+        private IDataService _dataService;
 
         private ICommand _beginPomodoroCommand;
 
@@ -87,7 +90,7 @@ namespace PomodorosApp.ViewModels
             set => SetProperty(ref _beginPomodoroCommand, value);
         }
 
-        public WorkingViewModel()
+        public WorkingViewModel(IDataService dataService)
         {
             BeginPomodoroCommand = new Command(BeginPomodoro);
             Timer = new PomodoroTimer();
@@ -103,6 +106,7 @@ namespace PomodorosApp.ViewModels
             BreakLength = 5;
 
             _audioService = new AudioService();
+            _dataService = dataService;
         }
 
         public override Task InitializeAsync(object navigationData = null)
@@ -113,7 +117,6 @@ namespace PomodorosApp.ViewModels
 
         private void BeginPomodoro()
         {
-
             Timer.SetBreakLength(BreakLength);
             Timer.SetPomodoroLength(PomodoroLength);
             Timer.SetPomodoroSetQuantity(PomodorosInSet);
@@ -126,10 +129,11 @@ namespace PomodorosApp.ViewModels
             CurrentSet = new PomodoroSet()
             {
                 BreakLength = new TimeSpan(0, BreakLength, 0),
-                PomodoroLength = new TimeSpan(0, PomodoroLength, 0)
+                PomodoroLength = new TimeSpan(0, PomodoroLength, 0),
+                Date = DateTime.Now
             };
 
-            CurrentSet.Pomodoros.Add(new Pomodoro(PomodoroLength));
+            CurrentSet.Pomodoros.Add(new Pomodoro(PomodoroLength) { Date = DateTime.Now });
 
             Timer.StartPomodoroTimer();
         }
@@ -144,6 +148,7 @@ namespace PomodorosApp.ViewModels
             {
                 _runningTimer.Stop();
                 _audioService.SetNextSound(string.Empty);
+                OnSetComplete();
                 return;
             }
             else
@@ -155,6 +160,27 @@ namespace PomodorosApp.ViewModels
         private void OnRunningTimerTick(object sender, ElapsedEventArgs e)
         {
             RunningTotal += TimeSpan.FromSeconds(1);
+        }
+
+        private async void OnSetComplete()
+        {
+            //save
+            bool saved = await _dataService.SaveCompletedSetAsync(CurrentSet);
+
+            if (!saved)
+            {
+                //TODO: Log error
+                //TODO: Queue re-save
+            }
+
+            //reset
+            IsInactive = true;
+            PomodorosInSet = 4;
+            PomodoroLength = 25;
+            BreakLength = 5;
+            Timer = new PomodoroTimer();
+            RunningTotal = TimeSpan.Zero;
+            CurrentSet = null;
         }
     }
 }

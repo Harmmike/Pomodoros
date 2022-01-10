@@ -1,4 +1,6 @@
-﻿using PomodorosApp.Services.Navigation;
+﻿using PomodorosApp.Services.Audio;
+using PomodorosApp.Services.Navigation;
+using PomodorosApp.Shared.Data;
 using PomodorosApp.Views;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,8 @@ namespace PomodorosApp.ViewModels.Base
 
             //Register Services
             _container.Register<INavigationService, NavigationService>();
+            _container.Register<IAudioService, AudioService>();
+            _container.Register<IDataService, DataService>();
         }
 
         public static T Resolve<T>() where T : class
